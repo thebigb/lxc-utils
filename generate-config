@@ -1,0 +1,41 @@
+#!/bin/bash
+
+TEMPLATES=$HOME/share/config-templates
+
+PHPSTORM_SERVER_CONFIG=$HOME/.WebIde100/config/options/webServers.xml
+
+case "$1" in
+	phpstorm-add-server)
+		HOST=$2.dev
+		UUID=$3
+		FILE=$(tempfile)
+		
+		cp $TEMPLATES/phpstorm/server.xml $FILE
+		sed -i "s/\$UUID/$UUID/g" $FILE
+		sed -i "s/\$HOST/$HOST/g" $FILE
+		
+		sed -i "/<option name=\"servers\">/r $FILE" $PHPSTORM_SERVER_CONFIG
+		rm $FILE
+		exit 0
+		;;
+	
+	phpstorm-project)
+		NAME=$2
+		HOST=$NAME.dev
+		UUID=$3
+		DIR=$4
+		
+		mkdir -p $DIR
+		echo $NAME > $DIR/.name
+		cp $TEMPLATES/phpstorm/deployment.xml $DIR/deployment.xml
+		cp $TEMPLATES/phpstorm/workspace.xml $DIR/workspace.xml
+		cp $TEMPLATES/phpstorm/modules.xml $DIR/modules.xml
+		cp $TEMPLATES/phpstorm/project.iml $DIR/$NAME.iml
+		
+		sed -i "s/\$NAME/$NAME/g" $DIR/modules.xml
+		sed -i "s/\$HOST/$HOST/g" $DIR/deployment.xml
+		sed -i "s/\$UUID/$UUID/g" $DIR/workspace.xml
+
+		exit 0
+		;;
+esac

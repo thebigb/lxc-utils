@@ -1,0 +1,10 @@
+#!/bin/bash
+
+NAME=$1
+
+if ! lxc-ls | grep ^$NAME\$ > /dev/null; then
+	echo "Container $NAME does not exist"
+	exit 1
+fi
+
+lxc-stop -n $NAME

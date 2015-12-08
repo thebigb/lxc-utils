@@ -1,0 +1,20 @@
+#!/bin/bash
+
+NAME=$1
+shift
+
+if ! lxc-ls | grep ^$NAME\$ > /dev/null; then
+	echo "Container $NAME does not exist"
+	exit 1
+fi
+
+if lxc-ls --running | grep ^$NAME\$ > /dev/null; then
+	echo "Container $NAME is already running"
+	exit 2
+fi
+
+LOG_FILE=$(tempfile)
+lxc-start -n $NAME --logpriority=TRACE --logfile=$LOG_FILE $@
+less +F $LOG_FILE
+
+echo "Log stored in $LOG_FILE"

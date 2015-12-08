@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "$EUID" -eq 0 ]; then
+	LXC_BASE = /var/lib/lxc
+else
+	LXC_BASE = $HOME/.local/share/lxc
+fi
+
+EDITOR=${EDITOR:-$(readlink /etc/alternatives/editor || echo nano)}
+
+$EDITOR $LXC_BASE/$1/config

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+have lxc-start &&
+{
+	_lxc_names()
+	{
+		COMPREPLY=( $( compgen -W "$( lxc-ls )" "$cur" ) )
+	}
+
+	_lxc_generic_n()
+	{
+		local cur prev
+
+		COMPREPLY=()
+		_get_comp_words_by_ref cur prev
+
+		_lxc_names "$cur"
+		return 1
+	}
+
+	complete -o default -F _lxc_generic_n lxa
+	complete -o default -F _lxc_generic_n lxb
+	complete -o default -F _lxc_generic_n lxc
+	complete -o default -F _lxc_generic_n lxclone
+	complete -o default -F _lxc_generic_n lxconf
+	complete -o default -F _lxc_generic_n lxdiag
+	complete -o default -F _lxc_generic_n lxi
+	complete -o default -F _lxc_generic_n lxlog
+	complete -o default -F _lxc_generic_n lxs
+}
