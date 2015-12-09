@@ -36,3 +36,5 @@ lxdiag     Runs 'lxc-start' with log priority 'TRACE' and opens the log
 - [ ] Remove static IP usage from `lxclone`
 - [ ] Add more PHPStorm config templates
 - [ ] Make config templates smarter (detect existing entries)
+- [ ] Make installer packages deb/rpm
+- [ ] Make config tooling more generic and multi-purpose (e.g. also get summaries from existing configuration)
