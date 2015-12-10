@@ -24,45 +24,45 @@ if lxc-ls | grep ^$CONTAINER\$ > /dev/null; then
 	exit 2
 fi
 
-IP_INDEX_FILE=$LXC_BASE/ipindex
-IP_INDEX=$(($(cat $IP_INDEX_FILE) + 1))
-echo $IP_INDEX > $IP_INDEX_FILE
-
-LANG=$(echo $CONTAINER | cut -d- -f1)
-PROJ=$(echo $CONTAINER | cut -d- -f2)
+LANG=$(echo $BASE_CONTAINER | cut -d- -f1)
 RANDOM_MAC=$(hexdump -n5 -e'/5 "00" 5/1 ":%02X"' /dev/urandom)
-IP=10.0.3.$IP_INDEX
 
-LXC_CONFIG=$LXC_BASE/$CONTAINER/config
-CONTAINER_ROOT=$LXC_BASE/$CONTAINER/rootfs
-PROJECT_DIR=$HOME/projects/$LANG/$PROJ
+LXC_CONFIG=$LXC_DATA/$CONTAINER/config
+CONTAINER_ROOT=$LXC_DATA/$CONTAINER/rootfs
+PROJECT_DIR=$HOME/projects/$LANG/$CONTAINER
 
 lxc-start-ephemeral -o $BASE_CONTAINER -n $CONTAINER --storage-type=dir --union-type overlayfs --keep-data -d
 lxc-stop -n $CONTAINER
 
+if [ ! -e "$LXC_CONFIG" ]; then
+	echo "Failed cloning"
+	exit 1
+fi
+
 sed -i "/lxc.utsname = .*/d" $LXC_CONFIG
-sed -i "/lxc.network.ipv4 = .*/d" $LXC_CONFIG
 sed -i "/lxc.network.hwaddr = .*/d" $LXC_CONFIG
 sed -i "/lxc.network.0.hwaddr/d" $LXC_CONFIG
 
 echo "lxc.utsname = $CONTAINER" >> $LXC_CONFIG
-echo "lxc.network.ipv4 = $IP/24" >> $LXC_CONFIG
 echo "lxc.network.hwaddr = $RANDOM_MAC" >> $LXC_CONFIG
 
-echo "$IP	$PROJ.dev" | sudo tee -a /etc/hosts
-
-mkdir -p $PROJECT_DIR
+if [ ! -d "$PROJECT_DIR" ]; then
+	mkdir -p $PROJECT_DIR
+fi
 
 if [ $LANG == "php" ]; then
-	echo "lxc.mount.entry = $PROJECT_DIR $CONTAINER_ROOT/var/www none bind,rw 0 0" >> $LXC_CONFIG
-	
-	mkdir -p $PROJECT_DIR/app/.idea
-	mkdir -p $PROJECT_DIR/error-pages
-	
-	SERVER_UUID=$(uuidgen)
-	generate-config phpstorm-add-server $PROJ $SERVER_UUID
-	generate-config phpstorm-project $PROJ $SERVER_UUID $PROJECT_DIR/app/.idea
+	echo "lxc.mount.entry = $PROJECT_DIR $CONTAINER_ROOT/var/www/web none bind,rw 0 0" >> $LXC_CONFIG
+
+	if [ ! -d "$PROJECT_DIR" ]; then
+		mkdir -p $PROJECT_DIR/app/.idea
+		mkdir -p $PROJECT_DIR/error-pages
+
+		SERVER_UUID=$(uuidgen)
+		INTERPRETER_UUID=$(uuidgen)
+		generate-config phpstorm-add-server $CONTAINER.lxc $SERVER_UUID
+		generate-config phpstorm-add-interpreter $CONTAINER.lxc $SERVER_UUID $INTERPRETER_UUID
+		generate-config phpstorm-project $CONTAINER $CONTAINER.lxc $SERVER_UUID $INTERPRETER_UUID $PROJECT_DIR/app/.idea
+	fi
 else
 	echo "lxc.mount.entry = $PROJECT_DIR $CONTAINER_ROOT/home/administrator none bind,rw 0 0" >> $LXC_CONFIG
 fi
-
