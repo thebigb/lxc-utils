@@ -1,0 +1,3 @@
+      <interpreter home="sftp://www-data@$HOST:22/usr/bin/php" id="$UUID_INT" name="$HOST Interpreter" debugger_id="php.debugger.XDebug">
+        <remote_data WEB_SERVER_CONFIG_ID="$UUID" WEB_SERVER_CONFIG_NAME="SSH - $HOST" HOST="$HOST" PORT="22" ANONYMOUS="false" USERNAME="www-data" PASSWORD="" PRIVATE_KEY_FILE="" MY_KNOWN_HOSTS_FILE="" PASSPHRASE="" USE_KEY_PAIR="false" INTERPRETER_PATH="/usr/bin/php" HELPERS_PATH="/var/www/.phpstorm_helpers" INITIALIZED="false" VALID="true" />
+      </interpreter>

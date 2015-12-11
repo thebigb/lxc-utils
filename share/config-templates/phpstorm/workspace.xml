@@ -5,4 +5,5 @@
     <option name="myConnectionType" value="DEPLOYMENT_SERVER" />
     <option name="myConnectionId" value="$UUID" />
   </component>
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="$HOST Interpreter" />
 </project>

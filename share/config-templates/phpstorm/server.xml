@@ -1,5 +1,5 @@
         <webServer id="$UUID" name="SSH - $HOST" url="http://$HOST">
-          <fileTransfer host="$HOST" port="22" rootFolder="/var/www/app" accessType="SFTP" password="dfdddfdddfdddf87dfcedfcbdfdedfcb" username="www-data">
+          <fileTransfer host="$HOST" port="22" rootFolder="/var/www/web/app" accessType="SFTP" password="dfdddfdddfdddf87dfcedfcbdfdedfcb" username="www-data">
             <advancedOptions>
               <advancedOptions dataProtectionLevel="Private" />
             </advancedOptions>
