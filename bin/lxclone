@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ "$EUID" -eq 0 ]; then
-	LXC_BASE = /var/lib/lxc
+	LXC_BASE=/var/lib/lxc
 else
-	LXC_BASE = $HOME/.local/share/lxc
+	LXC_BASE=$HOME/.local/share/lxc
 fi
 
 if [ "$1" == "--help" ] || [ "$#" -lt 2 ]; then
@@ -27,8 +27,8 @@ fi
 LANG=$(echo $BASE_CONTAINER | cut -d- -f1)
 RANDOM_MAC=$(hexdump -n5 -e'/5 "00" 5/1 ":%02X"' /dev/urandom)
 
-LXC_CONFIG=$LXC_DATA/$CONTAINER/config
-CONTAINER_ROOT=$LXC_DATA/$CONTAINER/rootfs
+LXC_CONFIG=$LXC_BASE/$CONTAINER/config
+CONTAINER_ROOT=$LXC_BASE/$CONTAINER/rootfs
 PROJECT_DIR=$HOME/projects/$LANG/$CONTAINER
 
 lxc-start-ephemeral -o $BASE_CONTAINER -n $CONTAINER --storage-type=dir --union-type overlayfs --keep-data -d
@@ -53,7 +53,7 @@ fi
 if [ $LANG == "php" ]; then
 	echo "lxc.mount.entry = $PROJECT_DIR $CONTAINER_ROOT/var/www/web none bind,rw 0 0" >> $LXC_CONFIG
 
-	if [ ! -d "$PROJECT_DIR" ]; then
+	if [ ! -d "$PROJECT_DIR/app" ]; then
 		mkdir -p $PROJECT_DIR/app/.idea
 		mkdir -p $PROJECT_DIR/error-pages
 

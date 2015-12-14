@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ "$EUID" -eq 0 ]; then
-	LXC_BASE = /var/lib/lxc
+	LXC_BASE=/var/lib/lxc
 else
-	LXC_BASE = $HOME/.local/share/lxc
+	LXC_BASE=$HOME/.local/share/lxc
 fi
 
 NAME=$1

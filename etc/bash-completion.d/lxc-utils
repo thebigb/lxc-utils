@@ -7,7 +7,23 @@ have lxc-start &&
 		COMPREPLY=( $( compgen -W "$( lxc-ls )" "$cur" ) )
 	}
 
+	_lxc_running()
+	{
+		COMPREPLY=( $( compgen -W "$( lxc-ls --running )" "$cur" ) )
+	}
+
 	_lxc_generic_n()
+	{
+		local cur prev
+
+		COMPREPLY=()
+		_get_comp_words_by_ref cur prev
+
+		_lxc_names "$cur"
+		return 1
+	}
+
+	_lxc_running_n()
 	{
 		local cur prev
 
@@ -26,5 +42,5 @@ have lxc-start &&
 	complete -o default -F _lxc_generic_n lxdiag
 	complete -o default -F _lxc_generic_n lxi
 	complete -o default -F _lxc_generic_n lxlog
-	complete -o default -F _lxc_generic_n lxs
+	complete -o default -F _lxc_running_n lxs
 }
