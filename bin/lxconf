@@ -6,6 +6,14 @@ else
 	LXC_BASE=$HOME/.local/share/lxc
 fi
 
+NAME=$1
+shift
+
+if ! lxc-ls | grep ^$NAME\$ > /dev/null; then
+	echo "Container \"$NAME\" does not exist"
+	exit 1
+fi
+
 EDITOR=${EDITOR:-$(readlink /etc/alternatives/editor || echo nano)}
 
-$EDITOR $LXC_BASE/$1/config
+$EDITOR $LXC_BASE/$NAME/config

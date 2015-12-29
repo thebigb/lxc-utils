@@ -15,12 +15,12 @@ BASE_CONTAINER=$1
 CONTAINER=$2
 
 if ! lxc-ls | grep ^$BASE_CONTAINER\$ > /dev/null; then
-	echo "Base container $BASE_CONTAINER does not exist"
+	echo "Base container \"$BASE_CONTAINER\" does not exist"
 	exit 1
 fi
 
 if lxc-ls | grep ^$CONTAINER\$ > /dev/null; then
-	echo "Container with name $CONTAINER already exists"
+	echo "Container with name \"$CONTAINER\" already exists"
 	exit 2
 fi
 
@@ -63,6 +63,8 @@ if [ $LANG == "php" ]; then
 		generate-config phpstorm-add-interpreter $CONTAINER.lxc $SERVER_UUID $INTERPRETER_UUID
 		generate-config phpstorm-project $CONTAINER $CONTAINER.lxc $SERVER_UUID $INTERPRETER_UUID $PROJECT_DIR/app/.idea
 	fi
+elif [ $LANG == "js" ]; then
+	echo "lxc.mount.entry = $PROJECT_DIR $CONTAINER_ROOT/home/node/project none bind,rw 0 0" >> $LXC_CONFIG
 else
 	echo "lxc.mount.entry = $PROJECT_DIR $CONTAINER_ROOT/home/administrator none bind,rw 0 0" >> $LXC_CONFIG
 fi
