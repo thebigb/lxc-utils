@@ -8,7 +8,7 @@ fi
 
 NAME=$1
 
-if ! lxc-ls | grep ^$NAME\$ > /dev/null; then
+if ! lxls | grep "^$NAME\$" > /dev/null; then
 	echo "Container \"$NAME\" does not exist"
 	exit 1
 fi

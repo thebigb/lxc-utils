@@ -14,12 +14,12 @@ fi
 BASE_CONTAINER=$1
 CONTAINER=$2
 
-if ! lxc-ls | grep ^$BASE_CONTAINER\$ > /dev/null; then
+if ! lxls | grep "^$BASE_CONTAINER\$" > /dev/null; then
 	echo "Base container \"$BASE_CONTAINER\" does not exist"
 	exit 1
 fi
 
-if lxc-ls | grep ^$CONTAINER\$ > /dev/null; then
+if lxls | grep "^$CONTAINER\$" > /dev/null; then
 	echo "Container with name \"$CONTAINER\" already exists"
 	exit 2
 fi
