@@ -40,3 +40,4 @@ lxdiag     Runs 'lxc-start' with log priority 'TRACE' and opens the log
 - [ ] Make config tooling more generic and multi-purpose (e.g. also get summaries from existing configuration)
 - [ ] Make `lxclone` less opinionated (move project provisioning to other script?)
 - [ ] Determine how project provisioning should be done for root users
+- [ ] Support multiple PhpStorm versions simultaneously

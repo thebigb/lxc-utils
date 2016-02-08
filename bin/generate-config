@@ -2,8 +2,8 @@
 
 TEMPLATES=$HOME/share/config-templates
 
-PHPSTORM_SERVER_CONFIG=$HOME/.WebIde100/config/options/webServers.xml
-PHPSTORM_PHP_CONFIG=$HOME/.WebIde100/config/options/php.xml
+PHPSTORM_SERVER_CONFIG=$HOME/.WebIde110/config/options/webServers.xml
+PHPSTORM_PHP_CONFIG=$HOME/.WebIde110/config/options/php.xml
 
 case "$1" in
 	phpstorm-add-server)
