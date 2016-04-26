@@ -6,9 +6,55 @@ else
 	LXC_BASE=$HOME/.local/share/lxc
 fi
 
-if [ "$1" == "--help" ] || [ "$#" -lt 2 ]; then
-	echo "Usage: lxclone [source-name] [target-name]"
+function show_help()
+{
+	echo "Usage: lxclone [source-name] [target-name] {options}"
+	echo ""
+	echo "Options:"
+	echo "    -h --help             Show this help message"
+	echo "    -r --source-repo      Source code repository to clone into project directory"
+	echo "    -b --source-branch    Branch of source code repository to check out"
+	echo ""
 	exit 0
+}
+
+if ! ARGS=$(getopt -o hr:b: -l "help,source-repo:,source-branch:" -n "$0" -- "$@"); then
+	show_help
+	exit 1
+fi
+
+eval set -- "$ARGS"
+
+while true; do
+case "$1" in
+	-h|--help)
+		show_help
+		exit 0
+	;;
+	-r|--source-repo)
+		shift
+		SOURCE_REPO=$1
+		shift
+	;;
+	-b|--source-branch)
+		shift
+		SOURCE_BRANCH=$1
+		shift
+	;;
+	--)
+		shift
+		break
+	;;
+esac
+done
+
+if [ $1 == "--" ]; then
+	shift
+fi
+
+if [ $# -ne 2 ]; then
+	show_help
+	exit 1
 fi
 
 BASE_CONTAINER=$1
@@ -51,17 +97,26 @@ if [ ! -d "$PROJECT_DIR" ]; then
 fi
 
 if [ $LANG == "php" ]; then
-	echo "lxc.mount.entry = $PROJECT_DIR $CONTAINER_ROOT/var/www/web none bind,rw 0 0" >> $LXC_CONFIG
+	echo "lxc.mount.entry = $PROJECT_DIR $CONTAINER_ROOT/var/www/web/app none bind,rw 0 0" >> $LXC_CONFIG
 
-	if [ ! -d "$PROJECT_DIR/app" ]; then
-		mkdir -p $PROJECT_DIR/app/.idea
-		mkdir -p $PROJECT_DIR/error-pages
-
+	if [ ! -d "$PROJECT_DIR/.idea" ]; then
+		cd $PROJECT_DIR
+		
+		if [ -n "$SOURCE_REPO" ]; then
+			git clone $SOURCE_REPO .
+		fi
+		
+		if [ -n "$SOURCE_BRANCH" ]; then
+			git checkout $SOURCE_BRANCH 
+		fi
+	
 		SERVER_UUID=$(uuidgen)
 		INTERPRETER_UUID=$(uuidgen)
 		generate-config phpstorm-add-server $CONTAINER.lxc $SERVER_UUID
 		generate-config phpstorm-add-interpreter $CONTAINER.lxc $SERVER_UUID $INTERPRETER_UUID
-		generate-config phpstorm-project $CONTAINER $CONTAINER.lxc $SERVER_UUID $INTERPRETER_UUID $PROJECT_DIR/app/.idea
+		
+		mkdir -p $PROJECT_DIR/.idea
+		generate-config phpstorm-project $CONTAINER $CONTAINER.lxc $SERVER_UUID $INTERPRETER_UUID $PROJECT_DIR/.idea
 	fi
 elif [ $LANG == "js" ]; then
 	echo "lxc.mount.entry = $PROJECT_DIR $CONTAINER_ROOT/home/node/project none bind,rw 0 0" >> $LXC_CONFIG

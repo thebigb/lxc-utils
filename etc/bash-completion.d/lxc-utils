@@ -30,7 +30,7 @@ have lxc-start &&
 		COMPREPLY=()
 		_get_comp_words_by_ref cur prev
 
-		_lxc_names "$cur"
+		_lxc_running "$cur"
 		return 1
 	}
 

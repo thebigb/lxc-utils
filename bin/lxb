@@ -13,4 +13,4 @@ if lxls --running | grep "^$NAME\$" > /dev/null; then
 	exit 2
 fi
 
-lxc-start -n $NAME $@
+lxc-start -d -n $NAME $@
