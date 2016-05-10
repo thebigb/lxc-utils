@@ -8,7 +8,7 @@ if ! lxls | grep "^$NAME\$" > /dev/null; then
 	exit 1
 fi
 
-if ! lxc-ls --running | grep ^$NAME\$ > /dev/null; then
+if ! lxls --running | grep ^$NAME\$ > /dev/null; then
     lxb $NAME
 fi
 

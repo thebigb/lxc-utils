@@ -101,20 +101,20 @@ if [ $LANG == "php" ]; then
 
 	if [ ! -d "$PROJECT_DIR/.idea" ]; then
 		cd $PROJECT_DIR
-		
+
 		if [ -n "$SOURCE_REPO" ]; then
 			git clone $SOURCE_REPO .
 		fi
-		
+
 		if [ -n "$SOURCE_BRANCH" ]; then
-			git checkout $SOURCE_BRANCH 
+			git checkout $SOURCE_BRANCH
 		fi
-	
+
 		SERVER_UUID=$(uuidgen)
 		INTERPRETER_UUID=$(uuidgen)
 		generate-config phpstorm-add-server $CONTAINER.lxc $SERVER_UUID
 		generate-config phpstorm-add-interpreter $CONTAINER.lxc $SERVER_UUID $INTERPRETER_UUID
-		
+
 		mkdir -p $PROJECT_DIR/.idea
 		generate-config phpstorm-project $CONTAINER $CONTAINER.lxc $SERVER_UUID $INTERPRETER_UUID $PROJECT_DIR/.idea
 	fi
